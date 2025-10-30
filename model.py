@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 import torch
+import os
 
 class AnimalDetector:
     def __init__(self, model_path='yolov5s.pt'):
@@ -23,3 +24,10 @@ class AnimalDetector:
                 label = result.names[cls]
                 animals.append({'name': label, 'confidence': conf})
         return animals
+
+    def train_model(self, data_path, epochs=10, batch_size=16, img_size=640):
+        """Train the YOLO model on custom dataset."""
+        self.model.train(data=data_path, epochs=epochs, batch=batch_size, imgsz=img_size, device=self.device)
+        # Save the trained model
+        self.model.save('trained_model.pt')
+        return 'trained_model.pt'

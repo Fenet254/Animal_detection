@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 from PIL import Image
+import zipfile
+import os
+import shutil
 
 def load_image(image_file):
     """Load image from file or bytes."""
@@ -34,3 +37,20 @@ def draw_boxes(image, results):
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.putText(image, f'{label} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     return image
+
+def extract_zip(zip_path, extract_to='data'):
+    """Extract zip file to specified directory."""
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(extract_to)
+    return extract_to
+
+def prepare_dataset(data_dir):
+    """Prepare dataset by organizing images and labels."""
+    # Assuming the dataset is in YOLO format with images and labels folders
+    images_dir = os.path.join(data_dir, 'images')
+    labels_dir = os.path.join(data_dir, 'labels')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+    if not os.path.exists(labels_dir):
+        os.makedirs(labels_dir)
+    return data_dir
